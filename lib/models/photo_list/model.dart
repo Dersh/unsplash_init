@@ -3,20 +3,21 @@ class PhotoList {
 
   PhotoList({this.photos});
 
-  PhotoList.fromJson(Map<String, dynamic> json) {
-    (json as List<dynamic>).forEach((value) {
-      photos.add(Photo.fromJson(value));
+  PhotoList.fromJson(List<dynamic> json) {
+    photos = List<Photo>();
+    json.forEach((value) {
+      photos.add(Photo.fromJson(value as Map<String, dynamic>));
     });
   }
 
-  Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> result = List<Map<String, dynamic>>();
+  List<dynamic> toJson() {
+    List<dynamic> result = List<dynamic>();
 
     photos.forEach((element) {
       result.add(element.toJson());
     });
 
-    return result as Map<String, dynamic>;
+    return result;
   }
 }
 
@@ -24,11 +25,11 @@ class Photo {
   String id;
   String createdAt;
   String updatedAt;
-  Null promotedAt;
+  String promotedAt;
   int width;
   int height;
   String color;
-  Null description;
+  String description;
   String altDescription;
   Urls urls;
   Links links;
@@ -226,11 +227,11 @@ class Sponsor {
   String username;
   String name;
   String firstName;
-  Null lastName;
+  String lastName;
   String twitterUsername;
   String portfolioUrl;
   String bio;
-  Null location;
+  String location;
   Links links;
   ProfileImage profileImage;
   String instagramUsername;

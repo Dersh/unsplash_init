@@ -81,7 +81,7 @@ class DataProvider {
     }
   }
 
-  static Future<bool> undoLikePhoto(String photoId) async {
+  static Future<bool> unlikePhoto(String photoId) async {
     var response = await http
         .delete('https://api.unsplash.com/photos/$photoId/like', headers: {
       'Authorization': 'Bearer $authToken',
