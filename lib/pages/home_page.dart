@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unsplash_init/data_provider.dart';
+import 'package:unsplash_init/pages/webview_page.dart';
 
 import 'photo_list.dart';
 
@@ -13,9 +14,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -32,28 +36,51 @@ class _MyHomePageState extends State<MyHomePage> {
               textColor: Colors.white,
               disabledColor: Colors.grey,
               disabledTextColor: Colors.black,
-              onPressed: () => {doLogin(context)}, //TODO: add auth WebView here
+              onPressed: () => {doLogin(context)},
+            ),
+            FlatButton(
+              child: Text("WebViewPage"),
+              color: Colors.blue,
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              onPressed: () {
+                _navigateAndDisplaySelection();
+              },
             )
           ],
         ),
       ),
     );
   }
-}
 
-void doLogin(BuildContext context) {
-  if (DataProvider.authToken == "") {
-    //TODO: WebView must be here
-    String oneTimeCode = 'ICSU40-wo3wl_yKskJAH9uEvfcyybWsNQ1s9HBNZCOs';
-    DataProvider.doLogin(oneTimeCode: oneTimeCode).then((value) {
-      DataProvider.authToken = value.accessToken;
+  void _navigateAndDisplaySelection() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => WebViewPage()),
+    ).then((value) {
+      RegExp exp = RegExp("(?<==).*");
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+          content: Text(exp.stringMatch(value))));
     });
   }
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PhotoListScreen(),
-    ),
-  );
+  void doLogin(BuildContext context) {
+    if (DataProvider.authToken == "") {
+      //TODO: WebView must be here
+      String oneTimeCode = 'ICSU40-wo3wl_yKskJAH9uEvfcyybWsNQ1s9HBNZCOs';
+      DataProvider.doLogin(oneTimeCode: oneTimeCode).then((value) {
+        DataProvider.authToken = value.accessToken;
+      });
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoListScreen(),
+      ),
+    );
+  }
 }

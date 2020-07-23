@@ -81,7 +81,7 @@ class Photo {
     //   });
     // }
     likes = json['likes'];
-    likedByUser = json['liked_by_user'];
+    likedByUser = json['liked_by_user'] ?? false;
     //был пустой объект, его генератор не смог обработать
     //в этом примере он на мне нужен
     //комментируем
