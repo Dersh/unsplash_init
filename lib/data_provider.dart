@@ -28,7 +28,7 @@ class DataProvider {
       'QwM9vJRRtD9ErqU_HcUWRa7S3e4LcqxPdrHAG6B-FgA'; //app access key from console
   static const String _secretKey =
       '5f3fxMGqhTzXUuAKDSd8J_7OyDtHr-IeLBRc1uYlZLk'; //app secrey key from console
-  static const String _authUrl =
+  static const String authUrl =
       'https://unsplash.com/oauth/authorize?client_id=$_accessKey&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=public+write_likes'; //authorize url from https://unsplash.com/oauth/applications/{your_app_id}
 
   static Future<Auth> doLogin({String oneTimeCode}) async {
