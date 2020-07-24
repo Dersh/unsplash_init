@@ -16,14 +16,6 @@ class _WebViewPageState extends State<WebViewPage> {
   bool isLoading = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  showSnack() async {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        content: const Text('Successed')));
-    await Future.delayed(Duration(seconds: 2));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +34,15 @@ class _WebViewPageState extends State<WebViewPage> {
           onPageStarted: (String url) async {
             if (url.contains(
                 'https://unsplash.com/oauth/authorize/native?code=')) {
-              showSnack().then((_) => Navigator.pop(context, url));
+              Navigator.pop(context, url);
             }
           },
-          onPageFinished: (String url) {},
+          onPageFinished: (String url) {
+            if (url.contains(
+                'https://unsplash.com/oauth/authorize/native?code=')) {
+              Navigator.pop(context, url);
+            }
+          },
           gestureNavigationEnabled: true,
         );
       }),

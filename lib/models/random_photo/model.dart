@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:http/http.dart' as http;
-//part 'model.g.dart';
+part 'model.g.dart';
 
 @JsonSerializable()
 class RandomPhoto {
@@ -16,10 +14,10 @@ class RandomPhoto {
 
   RandomPhoto({this.urls});
 
- // factory RandomPhoto.fromJson(Map<String, dynamic> json) =>
- //     _$RandomPhotoFromJson(json);
+  factory RandomPhoto.fromJson(Map<String, dynamic> json) =>
+      _$RandomPhotoFromJson(json);
 
- // Map<String, dynamic> toJson() => _$RandomPhotoToJson(this);
+  Map<String, dynamic> toJson() => _$RandomPhotoToJson(this);
 }
 
 @JsonSerializable()
@@ -27,6 +25,6 @@ class Url {
   String thumb;
   String full;
   Url({this.thumb, this.full});
- // factory Url.fromJson(Map<String, dynamic> json) => _$UrlFromJson(json);
- // Map<String, dynamic> toJson() => _$UrlToJson(this);
+  factory Url.fromJson(Map<String, dynamic> json) => _$UrlFromJson(json);
+  Map<String, dynamic> toJson() => _$UrlToJson(this);
 }

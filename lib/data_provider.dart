@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
     'password': '$pwd',
   });
 
-  if (response.statusCode == 200) {
+  if (response.statusCode >= 200 && response.statusCode < 300) {
     return Login.fromJson(json.decode(response.body));
   } else {
     throw Exception('Error: ${response.reasonPhrase}');
@@ -23,7 +23,7 @@ import 'package:http/http.dart' as http;
 
 class DataProvider {
   static const String _appId = "150449"; //not used, just for info
-  static String authToken = "F63Eugcwk6C8jy1RJ8v05x7G0lONfWkVBV5GqUe01CE";
+  static String authToken = ""; //"F63Eugcwk6C8jy1RJ8v05x7G0lONfWkVBV5GqUe01CE";
   static const String _accessKey =
       'QwM9vJRRtD9ErqU_HcUWRa7S3e4LcqxPdrHAG6B-FgA'; //app access key from console
   static const String _secretKey =
@@ -39,18 +39,19 @@ class DataProvider {
         body:
             '{"client_id":"$_accessKey","client_secret":"$_secretKey","redirect_uri":"urn:ietf:wg:oauth:2.0:oob","code":"$oneTimeCode","grant_type":"authorization_code"}');
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       return Auth.fromJson(json.decode(response.body));
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
     }
   }
 
-  static Future<PhotoList> getPhotos() async {
-    var response = await http.get('https://api.unsplash.com/photos',
+  static Future<PhotoList> getPhotos(int page, int perPage) async {
+    var response = await http.get(
+        'https://api.unsplash.com/photos?page=$page&per_page=$perPage',
         headers: {'Authorization': 'Bearer $authToken'});
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       return PhotoList.fromJson(json.decode(response.body));
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
@@ -61,7 +62,7 @@ class DataProvider {
     var response = await http.get('https://api.unsplash.com/photos/random',
         headers: {'Authorization': 'Bearer $authToken'});
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       return Photo.fromJson(json.decode(response.body));
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
@@ -74,8 +75,11 @@ class DataProvider {
       'Authorization': 'Bearer $authToken',
     });
 
-    if (response.statusCode == 200) {
-      return true;
+    print(response.body);
+    print(response.reasonPhrase);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return true; //returns 201 - Created
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
     }
@@ -87,8 +91,8 @@ class DataProvider {
       'Authorization': 'Bearer $authToken',
     });
 
-    if (response.statusCode == 200) {
-      return true;
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return true; //returns 201 - Created
     } else {
       throw Exception('Error: ${response.reasonPhrase}');
     }

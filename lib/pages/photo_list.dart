@@ -8,6 +8,31 @@ class PhotoListScreen extends StatefulWidget {
 }
 
 class _PhotoListState extends State<PhotoListScreen> {
+  ScrollController _scrollController = ScrollController();
+  int pageCount = 0;
+  bool isLoading = false;
+  var data = List<Photo>();
+
+  @override
+  void initState() {
+    this._getData(pageCount);
+    print('load data');
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.8) {
+        _getData(pageCount);
+      }
+    });
+    print('set listener');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,21 +46,10 @@ class _PhotoListState extends State<PhotoListScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FutureBuilder(
-                future: DataProvider.getPhotos(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(
-                        "Error loading photos: ${snapshot.error.toString()}");
-                  } else if (snapshot.hasData) {
-                    return _buildListView(context, snapshot.data.photos);
-                  }
-                  return CircularProgressIndicator();
-                })
-          ],
+          children: <Widget>[_buildListView(context, data)],
         ),
       ),
+      resizeToAvoidBottomPadding: false,
     );
   }
 
@@ -45,7 +59,16 @@ class _PhotoListState extends State<PhotoListScreen> {
       height: MediaQuery.of(context).size.height - 80,
       width: 250,
       child: ListView.builder(
+        controller: _scrollController,
         itemBuilder: (context, i) {
+          if (i == data.length) {
+            return Center(
+              child: Opacity(
+                opacity: isLoading ? 1 : 0,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
           return GestureDetector(
               child: _buildPhotoRow(photos[i]),
               onTap: () {
@@ -78,12 +101,12 @@ class _PhotoListState extends State<PhotoListScreen> {
                     size: 40,
                   ),
                   onPressed: () async {
+                    photo.likedByUser
+                        ? DataProvider.unlikePhoto(photo.id)
+                        : DataProvider.likePhoto(photo.id);
                     setState(() {
                       photo.likedByUser = !photo.likedByUser;
                     });
-                    photo.likedByUser
-                        ? DataProvider.likePhoto(photo.id)
-                        : DataProvider.unlikePhoto(photo.id);
                   },
                   constraints: BoxConstraints.tightFor(
                     width: 40,
@@ -102,5 +125,20 @@ class _PhotoListState extends State<PhotoListScreen> {
         ),
       ),
     );
+  }
+
+  void _getData(int page) async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+      var tempList = await DataProvider.getPhotos(page, 10);
+
+      setState(() {
+        isLoading = false;
+        data.addAll(tempList.photos);
+        pageCount++;
+      });
+    }
   }
 }
