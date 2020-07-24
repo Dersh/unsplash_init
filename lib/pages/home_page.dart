@@ -55,15 +55,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
         DataProvider.doLogin(oneTimeCode: oneTimeCode).then((value) {
           DataProvider.authToken = value.accessToken;
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PhotoListScreen(),
+            ),
+          );
         });
       });
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PhotoListScreen(),
-      ),
-    );
+    } else
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PhotoListScreen(),
+        ),
+      );
   }
 }
