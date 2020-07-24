@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unsplash_init/data_provider.dart';
+import 'package:unsplash_init/pages/pagination_sample.dart';
 import 'package:unsplash_init/pages/webview_page.dart';
 
 import 'photo_list.dart';
@@ -14,12 +15,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -30,24 +30,30 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'Press button to login',
             ),
-            FlatButton(
-              child: Text("Login"),
-              color: Colors.blue,
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              onPressed: () => {doLogin(context)},
+            Container(
+               width: 100,
+              child: FlatButton(
+                child: Text("Login"),
+                color: Colors.blue,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                onPressed: () => _navigateAndDisplaySelection(),
+              ),
             ),
-            FlatButton(
-              child: Text("WebViewPage"),
-              color: Colors.blue,
-              textColor: Colors.white,
-              disabledColor: Colors.grey,
-              disabledTextColor: Colors.black,
-              onPressed: () {
-                _navigateAndDisplaySelection();
-              },
-            )
+            Container(
+              width: 100,
+              child: FlatButton(
+                child: Text("Pagination"),
+                color: Colors.blue,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaginationSample()),)
+              ),
+            ),
           ],
         ),
       ),
@@ -60,17 +66,13 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(builder: (context) => WebViewPage()),
     ).then((value) {
       RegExp exp = RegExp("(?<==).*");
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.green,
-          content: Text(exp.stringMatch(value))));
+      doLogin(context, exp.stringMatch(value));
     });
   }
 
-  void doLogin(BuildContext context) {
+  void doLogin(BuildContext context,  String oneTimeCode) {
     if (DataProvider.authToken == "") {
-      //TODO: WebView must be here
-      String oneTimeCode = 'ICSU40-wo3wl_yKskJAH9uEvfcyybWsNQ1s9HBNZCOs';
+      //String oneTimeCode = 'ICSU40-wo3wl_yKskJAH9uEvfcyybWsNQ1s9HBNZCOs';
       DataProvider.doLogin(oneTimeCode: oneTimeCode).then((value) {
         DataProvider.authToken = value.accessToken;
       });

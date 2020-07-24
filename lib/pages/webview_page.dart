@@ -14,10 +14,20 @@ class _WebViewPageState extends State<WebViewPage> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
   bool isLoading = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  showSnack() async {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.green,
+        content: const Text('Successed')));
+    await Future.delayed(Duration(seconds: 2));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(title: const Text('WebView')),
       body: Builder(builder: (BuildContext context) {
         return WebView(
@@ -29,10 +39,10 @@ class _WebViewPageState extends State<WebViewPage> {
           javascriptChannels: <JavascriptChannel>[
             _toasterJavascriptChannel(context),
           ].toSet(),
-          onPageStarted: (String url) {
+          onPageStarted: (String url) async {
             if (url.contains(
                 'https://unsplash.com/oauth/authorize/native?code=')) {
-              Navigator.pop(context, url);
+              showSnack().then((_) => Navigator.pop(context, url));
             }
           },
           onPageFinished: (String url) {},
